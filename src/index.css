@@ -1,13 +1,139 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer reset, base, theme, components, utilities;
+
+@layer reset {
+  /* Box sizing and structural resets */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-block-size: 100vh;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Make sure images are responsive and preserve aspect-ratio */
+  img, svg, video {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  /* Accessibility interactive defaults */
+  button, input, textarea, select {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer base {
+  :root {
+    /* Color scheme defaults to dark mode but supports light mode override */
+    color-scheme: dark light;
+    
+    /* Font families */
+    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Theme colors */
+    --primary-hue: 245; /* Modern Royal Indigo */
+    --accent-hue: 320; /* Bright Neon Magenta/Pink */
+    
+    /* Semantic theme colors (light-dark) */
+    --color-bg-base: light-dark(#f6f8fc, #0a0b10);
+    --color-bg-surface: light-dark(#ffffff, rgba(16, 18, 27, 0.75));
+    --color-bg-surface-elevated: light-dark(#edf2f7, rgba(25, 28, 41, 0.85));
+    
+    --color-text-primary: light-dark(#0f172a, #f1f5f9);
+    --color-text-secondary: light-dark(#475569, #94a3b8);
+    --color-text-muted: light-dark(#94a3b8, #64748b);
+    
+    --color-primary: light-dark(hsl(var(--primary-hue), 75%, 55%), hsl(var(--primary-hue), 90%, 65%));
+    --color-accent: light-dark(hsl(var(--accent-hue), 75%, 55%), hsl(var(--accent-hue), 90%, 65%));
+    --color-primary-glow: light-dark(rgba(99, 102, 241, 0.1), rgba(129, 140, 248, 0.12));
+    --color-accent-glow: light-dark(rgba(236, 72, 153, 0.1), rgba(244, 114, 182, 0.12));
+    
+    --color-border: light-dark(rgba(15, 23, 42, 0.08), rgba(241, 245, 249, 0.08));
+    --color-border-glow: light-dark(rgba(99, 102, 241, 0.2), rgba(129, 140, 248, 0.3));
+
+    /* UI constants */
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --radius-full: 9999px;
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+    /* Layout constants */
+    --container-max-width: 1200px;
+    --header-height: 70px;
+
+    /* Transitions */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    overflow-wrap: break-word;
+    /* Beautiful subtle mesh gradient background */
+    background-image: 
+      radial-gradient(at 0% 0%, var(--color-primary-glow) 0, transparent 50%),
+      radial-gradient(at 100% 100%, var(--color-accent-glow) 0, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0;
+    color: var(--color-text-primary);
+    text-wrap: balance;
+  }
+
+  /* Custom Scrollbar */
+  body {
+    scrollbar-color: var(--color-primary) var(--color-bg-base);
+    scrollbar-width: thin;
+  }
+
+  /* Focus visible management */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Selection colors */
+  ::selection {
+    background-color: var(--color-primary);
+    color: #ffffff;
+  }
 }
