@@ -20,6 +20,7 @@
     "server": "node server.js",
     "dev": "concurrently \"npm run start\" \"npm run server\"",
     "build": "react-scripts build",
+    "preview": "concurrently \"serve -s build\" \"npm run server\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -42,6 +43,7 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^10.0.3"
+    "concurrently": "^10.0.3",
+    "serve": "^14.2.4"
   }
 }

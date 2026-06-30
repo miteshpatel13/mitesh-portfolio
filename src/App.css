@@ -35,6 +35,15 @@
   animation: floatSphere2 30s infinite alternate ease-in-out;
 }
 
+.glow-sphere-3 {
+  width: 35vw;
+  height: 35vw;
+  left: 30vw;
+  top: 30vh;
+  background: radial-gradient(circle, rgba(208, 231, 230, 0.08) 0%, transparent 80%);
+  animation: floatSphere1 28s infinite alternate-reverse ease-in-out;
+}
+
 @keyframes floatSphere1 {
   0% { transform: translate(0, 0) scale(1); }
   100% { transform: translate(8vw, 12vw) scale(1.1); }
@@ -64,7 +73,7 @@
   top: 0;
   z-index: 100;
   height: var(--header-height);
-  background-color: light-dark(rgba(246, 248, 252, 0.75), rgba(10, 11, 16, 0.75));
+  background-color: color-mix(in srgb, var(--color-bg-base) 75%, transparent);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--color-border);
   transition: background-color var(--transition-normal);
@@ -99,7 +108,7 @@
   border-radius: var(--radius-sm);
   font-size: 1.1rem;
   letter-spacing: -0.5px;
-  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .logo-text {
@@ -178,14 +187,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), hsl(var(--primary-hue), 85%, 60%));
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   color: #ffffff;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--color-primary) 45%, transparent);
 }
 
 .btn-secondary {
@@ -671,7 +680,7 @@
   background: var(--color-primary);
   color: #ffffff;
   border-color: var(--color-primary);
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .projects-grid {
@@ -986,7 +995,7 @@
   margin-block-start: 100px;
   padding-block: 40px;
   border-top: 1px solid var(--color-border);
-  background: light-dark(rgba(246, 248, 252, 0.6), rgba(10, 11, 16, 0.6));
+  background: color-mix(in srgb, var(--color-bg-base) 60%, transparent);
   backdrop-filter: blur(10px);
 }
 

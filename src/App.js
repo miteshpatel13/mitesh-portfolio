@@ -189,7 +189,11 @@ function App() {
     setErrorMessage('');
 
     try {
-      const response = await fetch('http://localhost:5001/api/contact', {
+      const apiUrl = process.env.REACT_APP_API_URL || 
+        (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+          ? 'http://localhost:5001' 
+          : '');
+      const response = await fetch(`${apiUrl}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -224,6 +228,7 @@ function App() {
       <div className="background-decorations">
         <div className="glow-sphere glow-sphere-1"></div>
         <div className="glow-sphere glow-sphere-2"></div>
+        <div className="glow-sphere glow-sphere-3"></div>
       </div>
 
       {/* Navigation Header */}

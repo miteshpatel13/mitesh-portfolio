@@ -1,51 +1,64 @@
-const express = require('express');
-const cors = require('cors');
 const nodemailer = require('nodemailer');
-require('dotenv').config();
 
-const app = express();
-const PORT = process.env.BACKEND_PORT || 5001;
-
-// Middlewares
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
-  methods: ['GET', 'POST'],
-  credentials: true
-}));
-app.use(express.json());
-
-// Base Route
-app.get('/', (req, res) => {
-  res.send('Portfolio Contact Backend is running.');
-});
-
-// Contact Route
-app.post('/api/contact', async (req, res) => {
-  const { name, email, message } = req.body;
-
-  // Simple validation
-  if (!name || !email || !message) {
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Please provide name, email, and message.' 
-    });
+exports.handler = async (event, context) => {
+  // Handle CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
+      body: ''
+    };
   }
 
-  // Check that email is configured
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error('SMTP credentials are not configured in the environment.');
-    return res.status(500).json({
-      success: false,
-      message: 'Mail server credentials are not configured. Please check the backend .env configuration.'
-    });
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ success: false, message: 'Method Not Allowed' })
+    };
   }
 
   try {
+    const { name, email, message } = JSON.parse(event.body);
+
+    if (!name || !email || !message) {
+      return {
+        statusCode: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ success: false, message: 'Please provide name, email, and message.' })
+      };
+    }
+
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.error('SMTP credentials are not configured in Netlify environment variables.');
+      return {
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          success: false,
+          message: 'Mail server credentials are not configured in Netlify.'
+        })
+      };
+    }
+
     // Configure transporter
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.EMAIL_PORT, 10) || 587,
-      secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for 587/25
+      secure: process.env.EMAIL_SECURE === 'true',
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -57,9 +70,9 @@ app.post('/api/contact', async (req, res) => {
 
     // Mail Options
     const mailOptions = {
-      from: `"${name} (Portfolio Inquiry)" <${process.env.EMAIL_USER}>`, // standard SMTP practice
+      from: `"${name} (Portfolio Inquiry)" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_TO || 'mitesh13500@gmail.com',
-      replyTo: email, // so you can click reply directly
+      replyTo: email,
       subject: `New Portfolio Inquiry from ${name}`,
       text: `You have received a new inquiry from your portfolio website.\n\n` +
             `Name: ${name}\n` +
@@ -74,7 +87,7 @@ app.post('/api/contact', async (req, res) => {
             <p style="margin: 0; font-weight: 600; color: #475569; margin-block-end: 8px;">Message:</p>
             <p style="margin: 0; font-style: italic; white-space: pre-wrap; color: #0f172a;">${message}</p>
           </div>
-          <footer style="margin-block-start: 25px; font-size: 0.8rem; color: var(--color-text-muted, #64748b); text-align: center;">
+          <footer style="margin-block-start: 25px; font-size: 0.8rem; color: #64748b; text-align: center;">
             This email was sent dynamically from your portfolio contact form backend.
           </footer>
         </div>
@@ -84,22 +97,25 @@ app.post('/api/contact', async (req, res) => {
     // Send Mail
     await transporter.sendMail(mailOptions);
     console.log(`Mail successfully sent from ${email} to ${process.env.EMAIL_TO || 'mitesh13500@gmail.com'}`);
-    
-    return res.status(200).json({ 
-      success: true, 
-      message: 'Inquiry sent successfully!' 
-    });
+
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ success: true, message: 'Inquiry sent successfully!' })
+    };
 
   } catch (error) {
     console.error('Nodemailer Error:', error);
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Failed to send mail: ' + error.message 
-    });
+    return {
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ success: false, message: 'Failed to send mail: ' + error.message })
+    };
   }
-});
-
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Backend server is running on port ${PORT}`);
-});
+};
