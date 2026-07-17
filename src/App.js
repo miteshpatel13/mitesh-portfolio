@@ -657,7 +657,7 @@ function App() {
             <div className="timeline">
               <div className="timeline-item">
                 <div className="timeline-dot"></div>
-                <div className="timeline-date">April 2023 - Present</div>
+                <div className="timeline-date">April 2024 - Present</div>
                 <div className="timeline-content">
                   <h3 className="role-title">Full Stack Developer</h3>
                   <h4 className="company-name">
